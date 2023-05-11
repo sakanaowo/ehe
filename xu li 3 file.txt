@@ -1,0 +1,134 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+class Customer {
+private:
+	string name, gender, bday, address;
+
+public:
+	Customer(const string& name, const string& gender, const string& bday, const string& address)
+		: name(name), gender(gender), bday(bday), address(address) {}
+
+	string getname() {
+		return this->name;
+	}
+	string getgender() {
+		return this->gender;
+	}
+	string getbday() {
+		return this->bday;
+	}
+	string getaddress() {
+		return this->address;
+	}
+};
+
+class Item {
+private:
+	string name, unit;
+	int p_Price, s_Price;
+
+public:
+	Item(const string& name, const string& unit, int p_Price, int s_Price)
+		: name(name), unit(unit), p_Price(p_Price), s_Price(s_Price) {}
+
+	string getname() {
+		return this->name;
+	}
+	string getunit() {
+		return this->unit;
+	}
+	int getp_Price() {
+		return this->p_Price;
+	}
+	int gets_Price() {
+		return this->s_Price;
+	}
+};
+
+class Invoice {
+private:
+	string id;
+	Customer customer;
+	Item item;
+	int quantity;
+
+public:
+	Invoice(const string& id, const Customer& customer, const Item& item, int quantity)
+		: id(id), customer(customer), item(item), quantity(quantity) {}
+
+	void print();
+};
+
+void Invoice::print() {
+	cout << id << " "
+		<< customer.getname() << " "
+		<< customer.getaddress() << " "
+		<< item.getname() << " "
+		<< item.getunit() << " "
+		<< item.getp_Price() << " "
+		<< item.gets_Price() << " "
+		<< quantity << " "
+		<< quantity * item.gets_Price() << endl;
+}
+
+int main() {
+	int i;
+	ifstream file1, file2, file3;
+	file1.open("KH.in", ios::in);
+	int customer_num;
+	file1 >> customer_num;
+	vector<Customer> customers;
+	file1.ignore();
+	for (i = 0; i < customer_num; i++) {
+		string name, gender, bday, address;
+		getline(file1, name);
+		getline(file1, gender);
+		getline(file1, bday);
+		getline(file1, address);
+		customers.push_back(Customer(name, gender, bday, address));
+	}
+	file1.close();
+
+	file2.open("MH.in", ios::in);
+	int item_num;
+	file2 >> item_num;
+	vector<Item> items;
+	for (i = 0; i < item_num; i++) {
+		string name, unit;
+		int p_Price, s_Price;
+		file2.ignore();
+		getline(file2, name);
+		file2 >> unit >> p_Price >> s_Price;
+		items.push_back(Item(name, unit, p_Price, s_Price));
+	}
+	file2.close();
+	
+	file3.open("HD.in", ios::in);
+	int invoice_num;
+	file3 >> invoice_num;
+	file3.ignore();
+
+	vector<Invoice> invoices;
+	for (i = 0; i < invoice_num; i++) {
+    	string id, id1, id2;
+    	int quantity;
+    	file3 >> id1 >> id2 >> quantity;
+    	file3.ignore();
+
+    	Customer customer = customers[stoi(id1.substr(2, 3))-1];
+    	Item item = items[stoi(id2.substr(2, 3))-1];
+    	id = to_string(i+1);
+    	while (id.length()<3) id = "0"+id; 
+    	id = "HD" + id;
+    	invoices.push_back(Invoice(id, customer, item, quantity));
+	}
+	file3.close();
+
+
+	for (i = 0; i < invoice_num; i++) {
+		invoices[i].print();
+	}
+	
+}
